@@ -13,11 +13,12 @@ namespace Entidades
         private string cuil;
         private double disponibilidad;
 
-        public Cliente(string nombre, string apellido, string cuil)
+        public Cliente(string nombre, string apellido, string cuil,double dinero)
         {
             this.nombre = nombre;
             this.apellido = apellido;
             this.cuil = cuil;
+            this.disponibilidad = dinero;
         }
         public string Mostrar()
         {
@@ -29,7 +30,7 @@ namespace Entidades
         public string Cuil { get { return this.cuil; } }
         public string Apellido { get { return this.apellido; } set { this.apellido = value; } }
         public double Disponibilidad { get { return this.disponibilidad; } set { this.disponibilidad = value; } }
-        public bool Comprar(Producto producto)
+        public bool LeAlcanzaElDinero(Producto producto)
         {
             bool r = false;
             if (producto != null)
@@ -37,37 +38,46 @@ namespace Entidades
                 if(producto.Precio <=this.disponibilidad)
                 {
                     r = true;
-                    this.disponibilidad = this.disponibilidad - producto.Precio;
                 }
             }
             return r;
         }
-        public bool ComprarVarios(List<Producto> productos)
+        public static bool CuilIsValid(string cuil)
         {
             bool r = false;
-            double total=0;
-            foreach(Producto aux in productos)
-            {
-                if (aux!=null)
-                {
-                    total = total + aux.Precio;
-                }
-            }
-            if (disponibilidad >= total)
+            int aux;
+            if(cuil.Length == 11 && int.TryParse(cuil,out aux))
             {
                 r = true;
-                disponibilidad = disponibilidad - total;
             }
             return r;
         }
-        public bool esCliente(string nombre, string apellido)
+
+        public static  bool operator == (Cliente a, Cliente b)
+        {
+            return a==b.cuil;
+        }
+        public static bool operator !=(Cliente a,Cliente b)
+        {
+            return !(a == b);
+        }
+        public static bool operator ==(Cliente a , string cuil)
         {
             bool r = false;
-            if (nombre == this.nombre && apellido == this.apellido)
+            if( a.cuil == cuil)
             {
                 r = true;
             }
             return r;
+        }
+        public static bool operator !=(Cliente a, string cuil)
+        {
+            return !(a == cuil);
+        }
+        public static Cliente operator - (Cliente cte, double costo)
+        {
+            cte.Disponibilidad -= costo;
+            return cte;
         }
     }
 }

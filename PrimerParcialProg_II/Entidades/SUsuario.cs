@@ -24,5 +24,6 @@ namespace Entidades
             }
             return r;
         }
+        public static string Id { get { return id; } }
     }
 }

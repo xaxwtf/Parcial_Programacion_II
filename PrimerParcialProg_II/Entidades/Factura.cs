@@ -13,7 +13,8 @@ namespace Entidades
         private static int nroFacturaAnterior;
         private double precioTotal;// solo se deberia ver se calcula solo
         private string observaciones; 
-        private User vendedor; // no se deberia modificar por nadie
+        private string idVendedor; // no se deberia modificar por nadie
+        private Cliente comprador;
         static Factura()
         {
             nroFacturaAnterior = 0;
@@ -22,16 +23,14 @@ namespace Entidades
         {
             this.productos = new List<Producto>();
         }
-        public Factura(List<Producto> productos) : this()
+        public Factura( List<Producto> productos, Cliente comprador, string idVendedor):this()
         {
+            this.idVendedor = idVendedor;
             this.productos = productos;
+            this.comprador = comprador;
             this.nroFactura = nroFacturaAnterior + 1;
             nroFacturaAnterior = nroFacturaAnterior++;
             this.CalcularTotalFacturado();
-        }
-        public Factura( List<Producto> productos, User usuario):this(productos)
-        {
-            this.vendedor = usuario;
         }
         public int NroFactura { get { return this.nroFactura; } }
         public List<Producto> Productos { get { return this.productos; } }
@@ -40,7 +39,7 @@ namespace Entidades
             double total=0;
             foreach(Producto aux in this.productos)
             {
-                total = total + aux.Precio;
+                total = total + (aux.Precio *aux.Cant_Disponible);
             }
             this.precioTotal = total;
         }
@@ -62,10 +61,11 @@ namespace Entidades
                 this.observaciones = value; 
             } 
         }
-        public User Vendedor
+        public Cliente Comprador
         {
-            get { return this.vendedor; }
+            get { return this.comprador; }
         }
+        public string IdVendedor { get { return this.idVendedor; } }
         public static bool operator ==(Factura a, int b)
         {
             bool r = false;
@@ -78,6 +78,23 @@ namespace Entidades
         public static bool operator !=(Factura a, int b)
         {
             return !(a == b);
+        }
+        public static bool operator ==(Factura fac, Producto produc)
+        {
+            bool r = false;
+            foreach(Producto aux in fac.productos)
+            {
+                if (aux == produc)
+                {
+                    r = true;
+                    break;
+                }
+            }
+            return r;
+        }
+        public static bool operator !=(Factura fac, Producto producto)
+        {
+            return !(fac == producto);
         }
     }
 }

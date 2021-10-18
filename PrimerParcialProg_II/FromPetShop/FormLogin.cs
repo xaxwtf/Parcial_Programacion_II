@@ -14,37 +14,37 @@ namespace FromPetShop
     public partial class FormLogin : Form
     {
         Comercio petShop = new Comercio("clarita");
-        User usuarioAtivo;
         
         public FormLogin()
         {
-            petShop.HarcodearDatos();
             InitializeComponent();
-            
+            petShop.HarcodearDatos();
+
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
             
-            usuarioAtivo =petShop.LogearUsuario(this.txtId.Text, this.txtPasword.Text);
+            petShop.LogearUsuario(this.txtId.Text, this.txtPasword.Text);
                 switch (petShop.Conectado)
                 {
                     case EstadoDeSesion.ConectadoAdministrador:
                   
                         break;
                     case EstadoDeSesion.ConectadoEmpleado:
-                        FormMenuEmpleado empleado = new FormMenuEmpleado();
-                        empleado.ShowDialog();
+                       Form_Menu_Empleado empleado = new Form_Menu_Empleado();
+                       empleado.petShop = petShop;
+                       empleado.Show();
                         break;
                     case EstadoDeSesion.ConectadoSuperUsuario:
-                    FormMenuSuperUser SUsers = new FormMenuSuperUser();
-                    SUsers.Show();
+                    ///FormMenuSuperUser SUsers = new FormMenuSuperUser();
+                    //SUsers.Show();
                         break;
                     case EstadoDeSesion.Desconectado:
                     
                     break;                                                                 
                 }
-            petShop.Desconectar();
+            Comercio.Desconectar();
         }
 
         private void btnSUser_Click(object sender, EventArgs e)
